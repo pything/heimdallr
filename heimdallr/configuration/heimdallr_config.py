@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Christian Heider Nielsen"
-__doc__ = ""
+__doc__ = """ description """
 
 import os
 
@@ -18,12 +18,16 @@ MQTT_TOPIC = "v1/gpu/status"
 MQTT_PUBLISH_INTERVAL_SEC = 2  # SECONDS
 MQTT_QOS = 0  # At most once (0), At least once (1), Exactly once (2)
 
-HTML_TITLE = "VCLab Board"
+HTML_TITLE = "Local Resources"
 
 GPU_GRAPHS_ID = "gpu-graphs"
 GPU_TABLES_ID = "gpu-tables"
 GPU_INTERVAL_ID = "gpu-interval"
 GPU_INTERVAL_MS = MQTT_PUBLISH_INTERVAL_SEC * 1000
+
+TOP_TABLES_ID = "top-tables"
+TOP_INTERVAL_ID = "top-interval"
+TOP_INTERVAL_MS = MQTT_PUBLISH_INTERVAL_SEC * 1000 * 10
 
 DU_TABLES_ID = "du-tables"
 DU_INTERVAL_ID = "du-interval"
@@ -46,15 +50,15 @@ CALENDAR_ID = "calender-table"
 CALENDAR_INTERVAL_MS = 1000 * 60 * 60
 
 BUILD_STATUS_MAPPING = NOD(
-    streamserver="https://travis-ci.org/aivclab/streamserver.svg?branch=master",
-    dlcourse="https://github.com/aivclab/dlcourse.svg?branch=master",
-    poserecorder="https://github.com/aivclab/pose-recorder.svg",
-    vision="https://travis-ci.com/aivclab/vision.svg?branch=master",
-    RayKarsten="https://github.com/aivclab/RayKarstenWebAsm.svg",
-    dmr="https://github.com/aivclab/dmr.svg",
-)
+    # streamserver="https://travis-ci.org/aivclab/streamserver.svg?branch=master",
+    # dlcourse="https://github.com/aivclab/dlcourse.svg?branch=master",
+    # poserecorder="https://github.com/aivclab/pose-recorder.svg",
+    # vision="https://travis-ci.com/aivclab/vision.svg?branch=master",
+    # RayKarsten="https://github.com/aivclab/RayKarstenWebAsm.svg",
+    # dmr="https://github.com/aivclab/dmr.svg",
+)  # .as_dict()
 BUILD_STATUS_INTERVAL = "build-status-interval"
 
 DEBUG = True
 
-ALL_CONSTANTS = NOD(locals())
+ALL_CONSTANTS = NOD(locals())  # .as_dict()

@@ -7,7 +7,7 @@ pandas
 scikit-learn
 torch
 psutil
-dash
+dash>=2.6.1
 #dash_bootstrap_components
 plotly
 google_auth_oauthlib
@@ -20,3 +20,12 @@ pyfiglet
 schedule
 PyGithub
 msal
+pillow>=10.3.0 # not directly required, pinned by Snyk to avoid a vulnerability
+requests>=2.32.0 # not directly required, pinned by Snyk to avoid a vulnerability
+wheel>=0.38.0 # not directly required, pinned by Snyk to avoid a vulnerability
+waitress
+black>=24.3.0 # not directly required, pinned by Snyk to avoid a vulnerability
+fonttools>=4.43.0 # not directly required, pinned by Snyk to avoid a vulnerability
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
+werkzeug>=3.0.3 # not directly required, pinned by Snyk to avoid a vulnerability
+dash-bootstrap-components

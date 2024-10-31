@@ -23,7 +23,9 @@ __all__ = ["get_header"]
 
 
 def get_header() -> html.Div:
-    """description"""
+    """
+    header
+    """
     svg_p = Path(heimdallr.__file__).parent / "entry_points" / "assets" / "aivclab.svg"
     if svg_p.exists():
         with open(
@@ -41,23 +43,25 @@ def get_header() -> html.Div:
                 className="col text-left align-self-center p-1",
             ),
             html.Div(
-                [
-                    html.Img(
-                        src="/assets/alexandra.png",
-                        style={"height": "110px", "object-fit": "contain"},
-                    ),
-                ]
-                + (
-                    [
-                        html.Img(
-                            src=f"data:image/svg+xml;base64,{encoded.decode()}",
-                            # className='img-responsive',
-                            style={"height": "110px", "object-fit": "contain"},
-                        )
-                    ]
-                    if encoded
-                    else []
-                ),
+                []
+                #     +[
+                #         html.Img(
+                #             src="/assets/alexandra.png",
+                #             style={"height": "110px", "object-fit": "contain"},
+                #         ),
+                #     ]
+                #     + (
+                #         [
+                #             html.Img(
+                #                 src=f"data:image/svg+xml;base64,{encoded.decode()}",
+                #                 # className='img-responsive',
+                #                 style={"height": "110px", "object-fit": "contain"},
+                #             )
+                #         ]
+                #         if encoded
+                #         else []
+                #     ),
+                ,
                 className="col text-center p-1",
             ),
             html.Div(

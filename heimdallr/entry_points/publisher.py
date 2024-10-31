@@ -1,14 +1,21 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 19/03/2020
+           """
+
 import json
 import socket
 import time
 from typing import Any
 
-import paho.mqtt.client as mqtt
-import schedule
-from apppath import ensure_existence
-from draugr.python_utilities.business import busy_indicator
+import paho.mqtt.client
+import schedule  # TODO: USE PENDULUM INSTEAD
 from draugr.writers import LogWriter, MockWriter, Writer
-from warg import NOD
+from warg import NOD, busy_indicator, ensure_existence
 
 from heimdallr import PROJECT_APP_PATH, PROJECT_NAME
 from heimdallr.configuration.heimdallr_config import ALL_CONSTANTS
@@ -18,15 +25,16 @@ from heimdallr.configuration.heimdallr_settings import (
 )
 from heimdallr.utilities.publisher.unpacking import pull_disk_usage_info, pull_gpu_info
 
-HOSTNAME = socket.gethostname()
-
 __all__ = ["main"]
 
+HOSTNAME = socket.gethostname()
 LOG_WRITER: Writer = MockWriter()
 
 
 def on_publish(client: Any, userdata: Any, result, writer: callable = None) -> None:
-    """description"""
+    """
+    publisher callback
+    """
     global LOG_WRITER
     LOG_WRITER(result)
     if writer:
@@ -34,7 +42,9 @@ def on_publish(client: Any, userdata: Any, result, writer: callable = None) -> N
 
 
 def on_disconnect(client: Any, userdata: Any, rc, writer: callable = print) -> None:
-    """description"""
+    """
+    disconnect callback
+    """
     global LOG_WRITER
     if rc != 0:
         client.reconnect()
@@ -44,7 +54,9 @@ def on_disconnect(client: Any, userdata: Any, rc, writer: callable = print) -> N
 
 
 def main(setting_scope: SettingScopeEnum = SettingScopeEnum.user) -> None:
-    """description"""
+    """
+    main entry point
+    """
     global LOG_WRITER
     if setting_scope == SettingScopeEnum.user:
         LOG_WRITER = LogWriter(
@@ -57,24 +69,32 @@ def main(setting_scope: SettingScopeEnum = SettingScopeEnum.user) -> None:
             / f"{PROJECT_NAME}_publisher.log"
         )
     LOG_WRITER.open()
-    client = mqtt.Client(HOSTNAME)
+    client = paho.mqtt.client.Client(
+        client_id=HOSTNAME,
+        # userdata=None,
+        protocol=paho.mqtt.client.MQTTv5,
+    )
     client.on_publish = on_publish
-    client.on_disconnect = on_disconnect
+    # client.on_disconnect = on_disconnect
 
-    HEIMDALLR_SETTINGS = HeimdallrSettings(setting_scope)
+    heimdallr_settings = HeimdallrSettings(setting_scope)
+
+    client.tls_set(tls_version=paho.mqtt.client.ssl.PROTOCOL_TLS)
 
     client.username_pw_set(
-        HEIMDALLR_SETTINGS.mqtt_username, HEIMDALLR_SETTINGS.mqtt_password
+        heimdallr_settings.mqtt_username, heimdallr_settings.mqtt_password
     )
     try:
         client.connect(
-            HEIMDALLR_SETTINGS.mqtt_broker, HEIMDALLR_SETTINGS.mqtt_port, keepalive=60
+            heimdallr_settings.mqtt_broker,
+            int(heimdallr_settings.mqtt_port),
+            keepalive=60,
         )
     except ValueError as ve:
         raise ValueError(
-            f"{HEIMDALLR_SETTINGS._mqtt_settings_path},"
-            f"{HEIMDALLR_SETTINGS.mqtt_broker},"
-            f"{HEIMDALLR_SETTINGS.mqtt_port},"
+            f"{heimdallr_settings._mqtt_settings_path},"
+            f"{heimdallr_settings.mqtt_broker},"
+            f"{heimdallr_settings.mqtt_port},"
             f"{ve}"
         )
 
@@ -91,9 +111,12 @@ def main(setting_scope: SettingScopeEnum = SettingScopeEnum.user) -> None:
             """description"""
             sensor_data[HOSTNAME]["gpu_stats"] = pull_gpu_info()
             sensor_data[HOSTNAME]["du_stats"] = pull_disk_usage_info()
+            # sensor_data[HOSTNAME]['top_stats']= pull_top_info()
+
+            a = sensor_data.as_dict()
             client.publish(
                 ALL_CONSTANTS.MQTT_TOPIC,
-                json.dumps(sensor_data.as_dict()),
+                json.dumps(a),
                 ALL_CONSTANTS.MQTT_QOS,
             )
 

@@ -11,9 +11,8 @@ import time
 from typing import List, Tuple
 
 import psutil
-from warg import NOD
-
 from heimdallr.utilities.nvidia import bindings
+from warg import NOD
 
 try:
     bindings.nvmlInit()
@@ -22,7 +21,9 @@ except Exception as e:
 
 
 def get_nv_info(include_graphics_processes: bool = True) -> Tuple[str, List]:
-    """description"""
+    """
+    Get NVidia GPU information
+    """
     devices = []
     try:
         driver_version = bindings.nvmlSystemGetDriverVersion().decode()

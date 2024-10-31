@@ -7,7 +7,6 @@ __doc__ = r"""
            Created on 29/03/2020
            """
 
-
 # ============================================================================ #
 # Copyright (c) 2011-2019, NVIDIA Corporation.  All rights reserved.
 #
@@ -351,7 +350,9 @@ class NVMLError_NotSupported(Exception):
 
 
 class NvidiaSMI:
-    """description"""
+    """
+    NvidiaSMI is a class for querying the NVIDIA SMI (System Management Interface)
+    """
 
     __instance = None
     __handles = None
@@ -958,7 +959,7 @@ class NvidiaSMI:
             )
             clocksThrottleReasons = nvmlDeviceGetCurrentClocksThrottleReasons(handle)
             strResult += "    <clocks_throttle_reasons>\n"
-            for (mask, name) in throttleReasons:
+            for mask, name in throttleReasons:
                 if name != "clocks_throttle_reason_user_defined_clocks":
                     if mask & supportedClocksThrottleReasons:
                         val = "Active" if mask & clocksThrottleReasons else "Not Active"
@@ -1000,7 +1001,7 @@ class NvidiaSMI:
                 nvmlDeviceGetSupportedClocksThrottleReasons(handle)
             )
             clocksThrottleReasons = nvmlDeviceGetCurrentClocksThrottleReasons(handle)
-            for (mask, name) in throttleReasons:
+            for mask, name in throttleReasons:
                 if name != "clocks_throttle_reason_user_defined_clocks":
                     if mask & supportedClocksThrottleReasons:
                         val = "Active" if mask & clocksThrottleReasons else "Not Active"
@@ -1531,7 +1532,7 @@ class NvidiaSMI:
                             )
                         pciBridgeChip += (
                             "        <bridge_chip_fw>%s</bridge_chip_fw>\n"
-                            % (strFwVersion)
+                            % strFwVersion
                         )
                     except NVMLError as err:
                         pciBridgeChip += (
@@ -1653,7 +1654,6 @@ class NvidiaSMI:
                     or NVSMI_MEMORY_USED in filter
                     or NVSMI_MEMORY_FREE in filter
                 ):
-
                     includeMemoryUsage = True
                     try:
                         memInfo = nvmlDeviceGetMemoryInfo(handle)
@@ -2656,7 +2656,7 @@ class NvidiaSMI:
                     includePci = True
 
                 if NVSMI_ALL in filter or NVSMI_PCI_DEVICE_ID in filter:
-                    pci["pci_device_id"] = "%08X" % (pciInfo.pciDeviceId)
+                    pci["pci_device_id"] = "%08X" % pciInfo.pciDeviceId
                     includePci = True
 
                 if NVSMI_ALL in filter or NVSMI_PCI_BUS_ID in filter:
@@ -2664,7 +2664,7 @@ class NvidiaSMI:
                     includePci = True
 
                 if NVSMI_ALL in filter or NVSMI_PCI_SUBDEVICE_ID in filter:
-                    pci["pci_sub_system_id"] = "%08X" % (pciInfo.pciSubSystemId)
+                    pci["pci_sub_system_id"] = "%08X" % pciInfo.pciSubSystemId
                     includePci = True
 
                 pciGpuLinkInfo = {}
@@ -2827,9 +2827,9 @@ class NvidiaSMI:
                     or NVSMI_CLOCK_THROTTLE_REASONS_SW_THERMAL_SLOWDOWN in filter
                     or NVSMI_CLOCK_THROTTLE_REASONS_SYNC_BOOST in filter
                 ):
-                    gpuResults[
-                        "clocks_throttle"
-                    ] = NvidiaSMI.__GetClocksThrottleReasons(handle)
+                    gpuResults["clocks_throttle"] = (
+                        NvidiaSMI.__GetClocksThrottleReasons(handle)
+                    )
 
                 fbMemoryUsage = {}
                 includeMemoryUsage = False
@@ -2839,7 +2839,6 @@ class NvidiaSMI:
                     or NVSMI_MEMORY_USED in filter
                     or NVSMI_MEMORY_FREE in filter
                 ):
-
                     includeMemoryUsage = True
                     try:
                         memInfo = nvmlDeviceGetMemoryInfo(handle)
@@ -2914,7 +2913,6 @@ class NvidiaSMI:
                     or NVSMI_UTILIZATION_GPU in filter
                     or NVSMI_UTILIZATION_MEM in filter
                 ):
-
                     try:
                         util = nvmlDeviceGetUtilizationRates(handle)
                         gpu_util = util.gpu
@@ -3270,9 +3268,9 @@ class NvidiaSMI:
                             except NVMLError as err:
                                 supportedGraphicsClocks = NvidiaSMI.__handleError(err)
 
-                            supportMemClock[
-                                "supported_graphics_clock"
-                            ] = supportedGraphicsClocks
+                            supportMemClock["supported_graphics_clock"] = (
+                                supportedGraphicsClocks
+                            )
 
                             supportedClocks.append(supportMemClock)
                     #                         jj+=1
@@ -3383,13 +3381,13 @@ class NvidiaSMI:
             for key, val in value.items():
                 if isinstance(val, collections.Mapping):
                     if len(val.values()) > 0:
-                        strResults += ("%s%s:\n") % (indent, key)
+                        strResults += "%s%s:\n" % (indent, key)
                         strResults += self.__to_str_dictionary(val, "  " + indent)
                     else:
-                        strResults += ("%s%s: %s\n") % (indent, key, "None")
+                        strResults += "%s%s: %s\n" % (indent, key, "None")
                 elif (type(val) is list) and (isinstance(val[0], collections.Mapping)):
                     for i in range(0, len(val)):
-                        strResults += ("%s%s: [%d of %d]\n") % (
+                        strResults += "%s%s: [%d of %d]\n" % (
                             indent,
                             key,
                             i + 1,
@@ -3397,7 +3395,7 @@ class NvidiaSMI:
                         )
                         strResults += self.__to_str_dictionary(val[i], "  " + indent)
                 else:
-                    strResults += ("%s%s: %s\n") % (indent, key, str(val))
+                    strResults += "%s%s: %s\n" % (indent, key, str(val))
 
         except Exception as e:
             strResults += "\n[Error] " + str(e)
@@ -3410,7 +3408,7 @@ class NvidiaSMI:
         for key, val in results.items():
             if type(val) is list:
                 for i in range(0, len(val)):
-                    strResults += ("%s%s: [%d of %d]\n") % (
+                    strResults += "%s%s: [%d of %d]\n" % (
                         indent,
                         key,
                         i + 1,
@@ -3418,7 +3416,7 @@ class NvidiaSMI:
                     )
                     strResults += self.__to_str_dictionary(val[i], "  " + indent)
             else:
-                strResults += ("%s%s: %s\n") % (indent, key, str(val))
+                strResults += "%s%s: %s\n" % (indent, key, str(val))
 
         return strResults
 

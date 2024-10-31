@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 02-12-2020
+           """
+
 #################################################################################
 # Copyright (c) 2020, NVIDIA Corporation.  All rights reserved.                 #
 #                                                                               #
@@ -34,42 +43,42 @@
 # Helper function
 #
 from pynvml import (
-    nvmlDeviceGetUUID,
-    nvmlSystemGetDriverVersion,
-    NVML_BRAND_GRID,
-    NVML_BRAND_TITAN_RTX,
-    nvmlDeviceGetName,
-    NVML_BRAND_NVIDIA_RTX,
-    NVML_BRAND_NVIDIA_VGAMING,
-    NVML_BRAND_NVIDIA_VAPPS,
-    nvmlDeviceGetHandleByIndex,
-    NVML_BRAND_TITAN,
     NVMLError,
-    NVML_GPU_VIRTUALIZATION_MODE_NONE,
+    NVML_BRAND_GEFORCE,
     NVML_BRAND_GEFORCE_RTX,
-    NVML_BRAND_NVIDIA_VWS,
-    NVML_GPU_VIRTUALIZATION_MODE_HOST_VSGA,
+    NVML_BRAND_GRID,
     NVML_BRAND_NVIDIA,
-    NVML_GPU_VIRTUALIZATION_MODE_VGPU,
-    nvmlDeviceGetSerial,
-    NVML_GPU_VIRTUALIZATION_MODE_PASSTHROUGH,
-    nvmlInit,
-    NVML_ERROR_NOT_SUPPORTED,
-    nvmlDeviceGetBrand,
-    nvmlDeviceGetPciInfo,
+    NVML_BRAND_NVIDIA_RTX,
+    NVML_BRAND_NVIDIA_VAPPS,
+    NVML_BRAND_NVIDIA_VCS,
+    NVML_BRAND_NVIDIA_VGAMING,
+    NVML_BRAND_NVIDIA_VPC,
+    NVML_BRAND_NVIDIA_VWS,
+    NVML_BRAND_NVS,
+    NVML_BRAND_QUADRO,
+    NVML_BRAND_QUADRO_RTX,
     NVML_BRAND_TESLA,
+    NVML_BRAND_TITAN,
+    NVML_BRAND_TITAN_RTX,
+    NVML_BRAND_UNKNOWN,
+    NVML_ERROR_NOT_SUPPORTED,
+    NVML_GPU_VIRTUALIZATION_MODE_HOST_VGPU,
+    NVML_GPU_VIRTUALIZATION_MODE_HOST_VSGA,
+    NVML_GPU_VIRTUALIZATION_MODE_NONE,
+    NVML_GPU_VIRTUALIZATION_MODE_PASSTHROUGH,
+    NVML_GPU_VIRTUALIZATION_MODE_VGPU,
+    nvmlDeviceGetBrand,
     nvmlDeviceGetCount,
     nvmlDeviceGetGridLicensableFeatures,
+    nvmlDeviceGetHandleByIndex,
+    nvmlDeviceGetName,
+    nvmlDeviceGetPciInfo,
+    nvmlDeviceGetSerial,
+    nvmlDeviceGetUUID,
     nvmlDeviceGetVirtualizationMode,
-    NVML_BRAND_NVS,
-    NVML_BRAND_QUADRO_RTX,
-    NVML_GPU_VIRTUALIZATION_MODE_HOST_VGPU,
-    NVML_BRAND_GEFORCE,
+    nvmlInit,
     nvmlShutdown,
-    NVML_BRAND_UNKNOWN,
-    NVML_BRAND_NVIDIA_VCS,
-    NVML_BRAND_QUADRO,
-    NVML_BRAND_NVIDIA_VPC,
+    nvmlSystemGetDriverVersion,
 )
 
 
@@ -138,9 +147,9 @@ def device_query():
         for i in range(0, device_count):
             handle = nvmlDeviceGetHandleByIndex(i)
 
-            pciInfo = nvmlDeviceGetPciInfo(handle)
+            pci_nfo = nvmlDeviceGetPciInfo(handle)
 
-            str_result += f'  <gpu id="{pciInfo.busId}">\n'
+            str_result += f'  <gpu id="{pci_nfo.busId}">\n'
 
             str_result += (
                 f"    <product_name>{str(nvmlDeviceGetName(handle))}</product_name>\n"

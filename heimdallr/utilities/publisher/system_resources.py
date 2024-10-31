@@ -7,24 +7,13 @@ __doc__ = r"""
            Created on 29/03/2020
            """
 
-from typing import Dict, Mapping, Tuple
+from typing import Dict, Tuple
 
 import psutil
 
 __all__ = ["get_list_of_process_sorted_by_memory"]
 
-
-def select(mapping: Mapping, *a) -> Mapping:
-    """
-
-    Args:
-      mapping:
-      *a:
-
-    Returns:
-
-    """
-    return {k: v for k, v in mapping.items() if k in a}
+from warg.generators.mapping_generator import select_dict
 
 
 def get_list_of_process_sorted_by_memory(
@@ -41,12 +30,15 @@ def get_list_of_process_sorted_by_memory(
             list_of_proc_objects.append(proc_info)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
+
     sorted_entries = sorted(
         list_of_proc_objects, key=lambda proc_obj: proc_obj["vms"], reverse=True
     )
+
     if top_k:
         sorted_entries = sorted_entries[:top_k]
-    return {v["pid"]: select(v, "vms", *attrs) for v in sorted_entries}
+
+    return {v["pid"]: select_dict(v, "vms", *attrs) for v in sorted_entries}
 
 
 if __name__ == "__main__":
@@ -66,9 +58,11 @@ if __name__ == "__main__":
     def all_info_procs():
         """description"""
         list_of_process_names = list()
+
         for proc in psutil.process_iter():
             p_info_dict = proc.as_dict()
             list_of_process_names.append(p_info_dict)
+
         for elem in list_of_process_names:
             print(elem)
 

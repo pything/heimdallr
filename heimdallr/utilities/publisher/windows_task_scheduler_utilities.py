@@ -1,6 +1,13 @@
-__all__ = ["disable_service", "remove_service", "install_service", "enable_service"]
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-from pathlib import Path
+__author__ = "Christian"
+__doc__ = r"""
+
+           Created on 29/03/2020
+           """
+
+__all__ = ["disable_service", "remove_service", "install_service", "enable_service"]
 
 from draugr.os_utilities.windows_utilities import (
     delete_task,
@@ -11,6 +18,7 @@ from draugr.os_utilities.windows_utilities import (
 
 def disable_service(service_name: str) -> None:
     """
+    disable service
 
     Args:
       service_name:
@@ -20,6 +28,7 @@ def disable_service(service_name: str) -> None:
 
 def enable_service(service_name: str) -> None:
     """
+    enable service
 
     Args:
       service_name:
@@ -27,13 +36,14 @@ def enable_service(service_name: str) -> None:
     set_task_activity(service_name, True)
 
 
-def install_service(service_entry_point_path: Path, service_name: str) -> None:
+def install_service(service_name: str) -> None:
     """
+    install service
 
     Args:
-      service_entry_point_path:
       service_name:
     """
+
     new_user_logon_execute_task(
         service_name,
         service_name,
@@ -44,6 +54,7 @@ def install_service(service_entry_point_path: Path, service_name: str) -> None:
 
 def remove_service(service_name) -> None:
     """
+    remove service
 
     Args:
       service_name:

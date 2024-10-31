@@ -14,7 +14,18 @@ import shelve
 from enum import Enum
 from typing import Union
 
+from sorcery import assigned_names
+from warg import PropertySettings, is_windows
+from warg import ensure_existence
 from warg import is_nix
+
+from heimdallr import PROJECT_APP_PATH
+
+__all__ = [
+    "HeimdallrSettings",  # Setting Class
+    "SettingScopeEnum",  # Setting scope Enum
+    "set_all_heimdallr_settings",  # Set settings function
+]
 
 if is_nix():
     try:
@@ -22,18 +33,6 @@ if is_nix():
     except (ImportError, ModuleNotFoundError) as e:
         print(e)
         print("Please install sh and dependencies")
-
-from sorcery import assigned_names
-
-from apppath import ensure_existence
-from heimdallr import PROJECT_APP_PATH
-from warg import PropertySettings, is_windows
-
-__all__ = [
-    "HeimdallrSettings",  # Setting Class
-    "SettingScopeEnum",  # Setting scope Enum
-    "set_all_heimdallr_settings",  # Set settings function
-]
 
 
 # PropertySettings.raise_exception_on_none = False
@@ -184,11 +183,8 @@ class HeimdallrSettings(PropertySettings):
     def google_calendar_id(self) -> None:
         """
 
-        Args:
-            calendar_id ():
-
-        Returns:
-
+        :return:
+        :rtype:
         """
         key = inspect.currentframe().f_code.co_name
         with shelve.open(
@@ -235,11 +231,8 @@ class HeimdallrSettings(PropertySettings):
     def github_token(self) -> None:
         """
 
-        Args:
-            calendar_id ():
-
-        Returns:
-
+        :return:
+        :rtype:
         """
         key = inspect.currentframe().f_code.co_name
         with shelve.open(
@@ -253,19 +246,19 @@ def mqtt_access_token(self) -> Optional[str]:
 """ description """
 key = inspect.currentframe().f_code.co_name
 if self._look_up_env_on_missing == EnvironmentVariablePreference.prefer and key in os.environ:
-      return os.environ.get(key)
-with shelve.open(str(HeimdallrSettings._mqtt_settings_path)) as d:
-  if key in d:
-      return d[key]
-if self._look_up_env_on_missing == EnvironmentVariablePreference.if_missing and key in os.environ:
   return os.environ.get(key)
+with shelve.open(str(HeimdallrSettings._mqtt_settings_path)) as d:
+if key in d:
+  return d[key]
+if self._look_up_env_on_missing == EnvironmentVariablePreference.if_missing and key in os.environ:
+return os.environ.get(key)
 return None
 
 @mqtt_access_token.setter
 def mqtt_access_token(self, token: str) -> None:
 key = inspect.currentframe().f_code.co_name
 with shelve.open(str(HeimdallrSettings._mqtt_settings_path), writeback=True) as d:
-  d[key] = token
+d[key] = token
 '''
 
     @property
@@ -468,18 +461,18 @@ def set_all_heimdallr_settings(
     **kwargs,
 ):
     """description"""
-    HEIMDALLR_SETTINGS = HeimdallrSettings(setting_scope)
-    # print(f"current heimdallr settings: {HEIMDALLR_SETTINGS}")
+    heimdallr_settings = HeimdallrSettings(setting_scope)
+    # print(f"current heimdallr settings: {heimdallr_settings}")
     if _lower_keys:
         kwargs = {k.lower(): v for k, v in kwargs.items()}
 
     # for k in kwargs.keys():
-    #    assert k in HEIMDALLR_SETTINGS, f'"{k}" is not in Heimdallrs settings'
+    #    assert k in heimdallr_settings, f'"{k}" is not in Heimdallrs settings'
 
-    for k in HEIMDALLR_SETTINGS:
+    for k in heimdallr_settings:
         assert k in kwargs.keys(), f'Missing "{k}" from kwargs'
 
-    HEIMDALLR_SETTINGS.__from_dict__(kwargs)
+    heimdallr_settings.__from_dict__(kwargs)
 
     print(f"new heimdallr settings: {HeimdallrSettings()}")
 
@@ -493,8 +486,8 @@ if __name__ == "__main__":
     """
 set_all_heimdallr_settings(
 **{
-  k: getattr(settings, k) if getattr(settings, k) else None
-  for k in iter(settings)
+k: getattr(settings, k) if getattr(settings, k) else None
+for k in iter(settings)
 }
 )
 """

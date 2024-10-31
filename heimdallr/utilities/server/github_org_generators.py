@@ -7,6 +7,8 @@ __doc__ = r"""
            Created on 29/03/2020
            """
 
+import calendar
+
 # https://github.com/pulls?q=is%3Aopen+is%3Apr+user%3Aaivclab+archived%3Afalse+
 # https://github.com/pulls?user=aivclab
 from datetime import datetime, timedelta
@@ -14,7 +16,7 @@ from enum import Enum
 from typing import Generator, Iterable, List, Union
 
 from github import Github  # pip install PyGithub
-from github.GithubObject import NotSet
+from github.GithubObject import _NotSetType
 from github.Issue import Issue
 from github.Label import Label
 from github.Milestone import Milestone
@@ -105,15 +107,15 @@ def yield_org_prs(g: Github, org_name: str) -> Generator[PullRequest, None, None
 
 def yield_issues(
     iterable: Iterable[Repository],
-    milestone: Union[Milestone, str] = NotSet,
+    milestone: Union[Milestone, str] = _NotSetType,
     state: Union[str, StateEnum] = StateEnum.open,
-    assignee: Union[NamedUser, str] = NotSet,
-    mentioned: NamedUser = NotSet,
-    labels: Union[List[str], List[Label]] = NotSet,
+    assignee: Union[NamedUser, str] = _NotSetType,
+    mentioned: NamedUser = _NotSetType,
+    labels: Union[List[str], List[Label]] = _NotSetType,
     sort: Union[str, IssueSortEnum] = IssueSortEnum.updated,
     direction: Union[str, DirectionEnum] = DirectionEnum.desc,
-    since: datetime = NotSet,  # datetime.now(),
-    creator: Union[str, NamedUser] = NotSet,
+    since: datetime = _NotSetType,  # datetime.now(),
+    creator: Union[str, NamedUser] = _NotSetType,
 ) -> Generator[Issue, None, None]:
     """
 
@@ -156,8 +158,8 @@ def yield_prs(
     state: Union[str, StateEnum] = StateEnum.open,
     sort: Union[str, PullRequestSortEnum] = PullRequestSortEnum.updated,
     direction: Union[str, DirectionEnum] = DirectionEnum.desc,
-    base: str = NotSet,
-    head: str = NotSet,
+    base: str = _NotSetType,
+    head: str = _NotSetType,
 ) -> Generator[PullRequest, None, None]:
     """
 
@@ -200,9 +202,6 @@ def get_pull_request(g, org_name, repo_name, pull_request_number):
     return (
         g.get_organization(org_name).get_repo(repo_name).get_pull(pull_request_number)
     )
-
-
-import calendar
 
 
 def utc_to_epoch(timestamp):  # Timestamp is a datetime object in UTC time

@@ -8,6 +8,7 @@ __doc__ = r"""
            Function to get GPU information.
 """
 
+import logging
 from typing import List, Mapping, Sequence
 
 import numpy
@@ -35,26 +36,46 @@ __all__ = [
     "per_machine_per_device_pie_charts",
 ]
 
+logger = logging.getLogger(__name__)
+
 
 def to_overall_gpu_process_df(
     gpu_stats: Mapping, sort_by_key="used_gpu_mem"
 ) -> DataFrame:
-    """description"""
+    """
+    to overall gpu usage process df
+    """
     resulta = []
     columns = []
+
+    logger.warning(gpu_stats)
+
     if len(gpu_stats):
+
         for k2, v2 in gpu_stats.items():
             device_info = v2["devices"]
+
             for device_i in device_info:
+
                 processes = device_i["processes"]
+
                 if len(processes) > 0:
                     columns = list(processes[0].keys())
+
                 df = pandas.DataFrame(data=processes)
                 df["machine"] = [k2] * len(processes)
+
                 resulta.append(df)
 
     out_df = pandas.concat(resulta, sort=False)
-    out_df.sort_values(by=sort_by_key, axis=0, ascending=False, inplace=True)
+
+    logger.warning(out_df)
+
+    if sort_by_key:
+        out_df.sort_values(by=sort_by_key, axis=0, ascending=False, inplace=True)
+    else:
+        logger.warning(f"{sort_by_key} was not found in {out_df.columns}")
+
     if len(out_df) == 0:
         return pandas.DataFrame()
 
@@ -79,7 +100,9 @@ def to_overall_gpu_process_df(
 def per_machine_per_device_pie_charts(
     gpu_stats: Mapping, keep_alive: Sequence[Number]
 ) -> List[html.Div]:
-    """description"""
+    """
+    per machine per device pie charts
+    """
     compute_machines = []
     for machine_name, machine in gpu_stats.items():
         machine_devices = []
